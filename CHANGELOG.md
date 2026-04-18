@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] — 2026-04-18
+
+### Changed
+
+- **Now published to NuGet** — consume via
+  `dotnet add package NextIteration.SpectreConsole.Splash`. Brings the
+  package in line with the rest of the `NextIteration.SpectreConsole.*`
+  family, which are all on nuget.org. No API changes from 0.1.0.
+- Package metadata added (description, tags, project URL, license
+  expression, readme, icon). SourceLink enabled with embedded PDBs —
+  step-through debugging works out of the box for consumers.
+
+---
+
 ## [0.1.0] — 2026-04-18
 
 ### Added — initial public release
@@ -32,9 +46,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interpolation, colour validation, tagline strategies, renderer output,
   and the quote pool).
 
-### Not published to NuGet
-
-This package is consumed via git submodule + `<ProjectReference>`. See the
-README for setup instructions.
-
+[0.1.1]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.1
 [0.1.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.0

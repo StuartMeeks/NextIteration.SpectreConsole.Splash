@@ -9,6 +9,31 @@
 		<AnalysisLevel>latest</AnalysisLevel>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<PackageId>NextIteration.SpectreConsole.Splash</PackageId>
+		<Version>0.1.1</Version>
+		<Authors>Stuart Meeks</Authors>
+		<Description>Configurable Figgle + Spectre.Console splash screen for .NET CLIs — gradient palette, pluggable tagline strategy, single-markup-call render path.</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageOutputPath>C:\nuget-local\</PackageOutputPath>
+		<IncludeBuildOutput>true</IncludeBuildOutput>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>spectre;cli;splash;figgle;ascii-art</PackageTags>
+		<PackageIcon>icon.png</PackageIcon>
+		<Copyright>© Stuart Meeks</Copyright>
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<DebugType>embedded</DebugType>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<InternalsVisibleTo Include="NextIteration.SpectreConsole.Splash.Tests" />
 	</ItemGroup>
@@ -17,6 +42,9 @@
 		<PackageReference Include="Figgle" Version="0.6.5" />
 		<PackageReference Include="Figgle.Fonts" Version="0.6.5" />
 		<PackageReference Include="Spectre.Console" Version="0.55.2" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+		<None Include="icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 </Project>
