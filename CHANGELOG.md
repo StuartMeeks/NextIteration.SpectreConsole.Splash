@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.2] — 2026-05-03
+
+### Changed
+
+- **Symbol packaging.** Switched `<DebugType>` from `embedded` to `portable`
+  so the published `.snupkg` actually contains `.pdb` files. The previous
+  combination produced an empty `.snupkg` — fine for the workflow (which
+  uploaded only `*.nupkg` as an artifact, silently dropping the symbol
+  package), but it meant no symbols ever reached nuget.org's symbol
+  server. Consumers debugging into the library now get sources via the
+  symbol server out of the box.
+- **CI artifact path.** `upload-artifact` now captures `*nupkg` (both
+  `.nupkg` and `.snupkg`) so the publish job pushes both files.
+
+---
+
 ## [0.1.1] — 2026-04-18
 
 ### Changed
@@ -46,5 +62,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interpolation, colour validation, tagline strategies, renderer output,
   and the quote pool).
 
+[0.1.2]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.2
 [0.1.1]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.1
 [0.1.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.0
