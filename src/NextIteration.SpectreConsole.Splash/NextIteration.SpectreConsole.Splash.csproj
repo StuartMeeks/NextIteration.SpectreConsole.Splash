@@ -11,7 +11,7 @@
 
 	<PropertyGroup>
 		<PackageId>NextIteration.SpectreConsole.Splash</PackageId>
-		<Version>0.1.2</Version>
+		<Version>0.1.3</Version>
 		<Authors>Stuart Meeks</Authors>
 		<Description>Configurable Figgle + Spectre.Console splash screen for .NET CLIs — gradient palette, pluggable tagline strategy, single-markup-call render path.</Description>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
