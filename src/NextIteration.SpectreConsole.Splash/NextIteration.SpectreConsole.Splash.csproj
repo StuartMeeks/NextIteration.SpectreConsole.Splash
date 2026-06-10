@@ -39,10 +39,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Figgle" Version="0.6.5" />
-		<PackageReference Include="Figgle.Fonts" Version="0.6.5" />
-		<PackageReference Include="Spectre.Console" Version="0.55.2" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Figgle" />
+		<PackageReference Include="Figgle.Fonts" />
+		<PackageReference Include="Spectre.Console" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
