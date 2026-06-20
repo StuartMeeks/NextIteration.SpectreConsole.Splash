@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] — 2026-06-20
+
+### Added
+
+- **Multi-targeting `net8.0` and `net10.0`.** The package now ships `lib/net8.0`
+  and `lib/net10.0` assets, so consumers on .NET 8 can use it without forcing an
+  upgrade to .NET 10. No public API changes.
+
+---
+
 ## [0.1.2] — 2026-05-03
 
 ### Changed
