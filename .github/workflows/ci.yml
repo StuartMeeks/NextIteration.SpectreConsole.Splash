@@ -1,8 +1,5 @@
 name: CI
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 on:
   push:
     branches: [ main ]
@@ -15,14 +12,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v5
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.x'
+          # 8.0.x supplies the runtime the net8.0 test run executes on; the
+          # build itself uses the newest installed SDK (10.0.x).
+          dotnet-version: |
+            8.0.x
+            10.0.x
 
       - name: Restore
         run: dotnet restore
@@ -37,7 +41,7 @@ jobs:
         run: dotnet pack --configuration Release --no-build --output ./artifacts
 
       - name: Upload package artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-package
           # Capture both .nupkg and .snupkg so the publish job's
@@ -51,19 +55,20 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
 
     permissions:
+      contents: read    # actions/checkout — an explicit `permissions` block sets unlisted scopes to `none`
       id-token: write   # required for NuGet trusted publishing (OIDC token issuance)
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup .NET 10
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: nuget-package
           path: ./artifacts

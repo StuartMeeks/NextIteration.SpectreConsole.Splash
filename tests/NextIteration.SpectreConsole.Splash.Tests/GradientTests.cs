@@ -78,10 +78,10 @@ namespace NextIteration.SpectreConsole.Splash.Tests
         {
             var result = Gradient.Generate(["#123456", "#FFFFFF"], 1);
 
-            Assert.Single(result);
-            Assert.Equal(0x12, result[0].R);
-            Assert.Equal(0x34, result[0].G);
-            Assert.Equal(0x56, result[0].B);
+            var only = Assert.Single(result);
+            Assert.Equal(0x12, only.R);
+            Assert.Equal(0x34, only.G);
+            Assert.Equal(0x56, only.B);
         }
 
         [Fact]

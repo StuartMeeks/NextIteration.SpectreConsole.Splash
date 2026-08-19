@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+		<!-- Mirrors the library's TFMs so both shipped `lib/` assets are
+		     actually executed, each against its own dependency graph. -->
+		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+		<!-- xUnit.net v3 test projects are self-executing console apps. -->
+		<OutputType>Exe</OutputType>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<!-- Underscore naming (`Thing_does_thing`) is idiomatic for xUnit test methods. -->
@@ -11,10 +14,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 		<PackageReference Include="Spectre.Console.Testing" />
-		<PackageReference Include="xunit" />
-		<PackageReference Include="xunit.runner.visualstudio" />
+		<PackageReference Include="xunit.v3" />
 	</ItemGroup>
 
 	<ItemGroup>

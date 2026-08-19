@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AnalysisLevel>latest</AnalysisLevel>
@@ -12,10 +11,11 @@
 	<PropertyGroup>
 		<PackageId>NextIteration.SpectreConsole.Splash</PackageId>
 		<Version>0.3.0</Version>
-		<Authors>Stuart Meeks</Authors>
 		<Description>Configurable Figgle + Spectre.Console splash screen for .NET CLIs — gradient palette, pluggable tagline strategy, single-markup-call render path.</Description>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageOutputPath>C:\nuget-local\</PackageOutputPath>
+		<!-- Local dev feed, Windows only. Unguarded this created a literal
+		     `C:\nuget-local\` directory on Linux/macOS and in CI. -->
+		<PackageOutputPath Condition="$([MSBuild]::IsOSPlatform('Windows'))">C:\nuget-local\</PackageOutputPath>
 		<IncludeBuildOutput>true</IncludeBuildOutput>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -42,7 +42,6 @@
 		<PackageReference Include="Figgle" />
 		<PackageReference Include="Figgle.Fonts" />
 		<PackageReference Include="Spectre.Console" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
