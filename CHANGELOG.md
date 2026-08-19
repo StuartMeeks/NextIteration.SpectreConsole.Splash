@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- **Test suite migrated to xUnit.net v3 (`xunit.v3` 4.0.0)** from `xunit` 2.9.3.
+  Contributor-facing only — no library code, public API, or shipped package
+  contents changed. v3 test projects are self-executing console apps and run on
+  [Microsoft.Testing.Platform](https://learn.microsoft.com/dotnet/core/testing/microsoft-testing-platform-intro)
+  rather than VSTest, so a root `global.json` now opts `dotnet test` into the
+  MTP runner. `Microsoft.NET.Test.Sdk` and `xunit.runner.visualstudio` are no
+  longer needed and were dropped.
+
+- **Tests now run against both shipped TFMs.** The test project multi-targets
+  `net8.0;net10.0`, mirroring the library, so `lib/net8.0` is actually executed
+  against its own dependency graph instead of only being compiled. Previously
+  the suite ran on `net10.0` only. Running the full suite locally now requires
+  the .NET 8 runtime alongside the .NET 10 SDK.
+
+### Removed
+
+- **`Microsoft.SourceLink.GitHub` package reference.** The .NET SDK has bundled
+  SourceLink since .NET 8; the explicit reference was redundant. Verified
+  byte-identical `.nuspec` and `.snupkg` output either way — consumers still get
+  repository metadata and step-through sources.
+
+### Fixed
+
+- **`PackageOutputPath` no longer breaks non-Windows builds.** The hardcoded
+  `C:\nuget-local\` local dev feed is now guarded to Windows; previously every
+  `dotnet build` on Linux/macOS and in CI created a literal `C:\nuget-local\`
+  directory under `src/`.
+- **CI publish job could not check out the repo.** Its `permissions` block listed
+  only `id-token: write`, and GitHub sets every unlisted scope to `none`, leaving
+  `actions/checkout` without `contents: read`.
+
+---
+
 ## [0.3.0] — 2026-07-24
 
 ### Changed
@@ -82,6 +119,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interpolation, colour validation, tagline strategies, renderer output,
   and the quote pool).
 
+[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.3.0
 [0.2.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.2.0
 [0.1.2]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.2
