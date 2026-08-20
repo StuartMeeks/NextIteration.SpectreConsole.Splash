@@ -46,6 +46,13 @@ jobs:
           # security-and-quality is broader than the default security-extended;
           # these are small libraries, so the extra findings are affordable.
           queries: security-and-quality
+          # Analyse source only. obj/ and bin/ hold generated and compiled
+          # output — e.g. the xUnit auto-generated entry point — so findings
+          # there are noise against code no human maintains.
+          config: |
+            paths-ignore:
+              - "**/obj/**"
+              - "**/bin/**"
 
       # Explicit build rather than autobuild: these repos multi-target, and
       # autobuild has picked a single TFM in the past, silently analysing half
