@@ -26,6 +26,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Adopted the standards baseline docs, editor config and SDK pin.**
+  `SECURITY.md`, `CONTRIBUTING.md`, `CLAUDE.md` and a pull request template added;
+  `.gitignore` and `.editorconfig` replaced with the canonical copies; `global.json`
+  now pins the SDK band (`10.0.100`, `rollForward: latestFeature`) alongside the
+  existing Microsoft.Testing.Platform runner setting. An unpinned SDK gives a
+  contributor different analyzer results from CI, and `TreatWarningsAsErrors` turns
+  that into a build that fails for them and passes for everyone else.
+- **README now states its target frameworks and dependency floors** (§5.3), and
+  explains why the floors are not per-target-framework.
+- **`SplashTagline.RandomBuiltIn`'s XML doc corrected** from "~200 quotes" to
+  "~300": the built-in pool holds 313 entries. Documentation only; the pool itself
+  is unchanged.
+
 - **Test suite migrated to xUnit.net v3 (`xunit.v3` 4.0.0)** from `xunit` 2.9.3.
   Contributor-facing only — no library code, public API, or shipped package
   contents changed. v3 test projects are self-executing console apps and run on

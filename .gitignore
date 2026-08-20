@@ -225,6 +225,16 @@ PublishScripts/
 *.nupkg
 # NuGet Symbol Packages
 *.snupkg
+# Stray "C:/" / "c:/" directory created on non-Windows when the csproj's
+# Windows-style PackageOutputPath is interpreted as a relative path.
+**/[Cc]:/
+
+# Per-user Claude Code state — never commit
+.claude/settings.local.json
+.claude/projects/
+
+# Pack output (matches CI's --output flag)
+artifacts/
 # The packages folder can be ignored because of Package Restore
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.

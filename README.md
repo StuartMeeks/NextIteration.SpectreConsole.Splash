@@ -8,6 +8,9 @@ A reusable Figgle-and-Spectre.Console splash screen for .NET CLIs.
 - Performance-first: the entire splash is assembled as one markup string and
   emitted via a single `AnsiConsole.Markup` call.
 
+Targets `net8.0` and `net10.0`. Both targets carry an identical public surface and are
+covered by the same test suite on Linux, Windows, and macOS.
+
 ## Install
 
 ```bash
@@ -75,6 +78,25 @@ Additional wins:
   Windows-only logo splits breaking silently on Unix.
 - Space characters skip the colour-escape wrapper entirely (saves ~14
   markup chars per space).
+
+## Requirements
+
+- **.NET 8.0** or **.NET 10.0** (the package multi-targets `net8.0;net10.0`)
+- **Spectre.Console** 0.57.2+
+- **Figgle** and **Figgle.Fonts** 0.6.6+
+
+These floors are the versions the package is built and tested against. All three are
+pre-1.0 and version independently of the .NET runtime, so each takes a single common
+floor rather than one per target framework — a per-TFM floor would be meaningless where
+breaking changes land between minors.
+
+Everything else is transitive.
+
+## Contributing
+
+Issues and PRs welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md). This repository
+follows the baseline in
+[NextIteration.Standards](https://github.com/StuartMeeks/NextIteration.Standards).
 
 ## License
 
