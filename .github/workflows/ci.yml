@@ -1,41 +1,60 @@
+# CI for NextIteration.SpectreConsole.Splash.
+# Canonical shape defined in NextIteration.Standards STANDARD.md section 3 — change it
+# there first, then here. This file is the template verbatim bar the tag glob; there are
+# no EXCEPTIONS.md entries for this repo.
+#
+# The single required status check is `ci`, the aggregating gate below. `build` and `test`
+# must NOT be required directly: `test` is a matrix, so its check names carry the matrix
+# values and change whenever the matrix does. The gate's name is stable.
+#
+# The test matrix runs all three platforms (STANDARD.md 3.1.1). Nothing here is
+# platform-specific — the library writes no files and touches no OS store — but the
+# rendered logo does depend on line-ending handling and on Spectre's console
+# capability detection, and neither is verified by a Linux-only run.
 name: CI
 
 on:
   push:
     branches: [ main ]
-    tags:
-      - 'v*'
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
+
+# Superseded pushes are cancelled. Tag builds are never cancelled — a half-cancelled
+# release can leave an incomplete package set on nuget.org.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-
+    timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+      # Both SDKs: shipping projects target net8.0 and net10.0 and the tests run
+      # against BOTH (STANDARD.md 2.3), which needs the 8.0 runtime present.
+      - uses: actions/setup-dotnet@v6
         with:
-          # 8.0.x supplies the runtime the net8.0 test run executes on; the
-          # build itself uses the newest installed SDK (10.0.x).
           dotnet-version: |
             8.0.x
             10.0.x
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
 
       - name: Restore
         run: dotnet restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
-
-      - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Pack
         run: dotnet pack --configuration Release --no-build --output ./artifacts
@@ -44,43 +63,102 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: nuget-package
-          # Capture both .nupkg and .snupkg so the publish job's
-          # `dotnet nuget push *.nupkg` can also push the matching
-          # symbol package next to it.
+          # Both .nupkg and .snupkg, so the publish job's glob also pushes symbols.
           path: ./artifacts/*nupkg
 
-  publish:
-    needs: build
+  test:
+    strategy:
+      fail-fast: false        # one platform failing must not hide another's result
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      # Tests run across every shipped TFM (STANDARD.md 2.3). No --no-build: this job
+      # does not share a filesystem with `build`, and rebuilding is cheaper and less
+      # fragile than shipping obj/ between jobs.
+      # `-- --coverage` passes through to Microsoft.Testing.Platform's coverage
+      # extension (STANDARD.md 2.6). Referencing a collector without invoking it is
+      # worse than none: it reads as coverage in the dependency list while producing
+      # no data.
+      - name: Test
+        run: dotnet test --configuration Release --verbosity normal -- --coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-${{ matrix.os }}
+          path: '**/TestResults/*.coverage'
+          if-no-files-found: warn
+
+  # THE required status check. Aggregates everything above so the ruleset never has to
+  # know the matrix shape. `if: always()` is essential — without it the gate is skipped
+  # when a dependency fails, and a skipped check reads as success to branch protection.
+  ci:
+    needs: [ build, test ]
+    if: always()
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    timeout-minutes: 5
+    steps:
+      - name: Verify every required job succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ',') }}
+        run: |
+          echo "upstream results: $RESULTS"
+          case "$RESULTS" in
+            *failure*|*cancelled*|*skipped*)
+              echo "::error title=CI gate::an upstream job did not succeed ($RESULTS)"
+              exit 1 ;;
+          esac
+          echo "all upstream jobs succeeded"
+
+  publish:
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: startsWith(github.ref, 'refs/tags/')
 
     permissions:
-      contents: read    # actions/checkout — an explicit `permissions` block sets unlisted scopes to `none`
-      id-token: write   # required for NuGet trusted publishing (OIDC token issuance)
+      id-token: write   # GitHub OIDC token issuance for NuGet trusted publishing
+      contents: read
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v6
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
-      - name: Download artifact
-        uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@v8
         with:
           name: nuget-package
           path: ./artifacts
 
-      # Exchange the GitHub OIDC token for a short-lived nuget.org API key.
-      # Requires a Trusted Publishing policy configured on nuget.org that
-      # matches this repo owner/name and the `ci.yml` workflow file.
-      - name: NuGet login (OIDC → temp API key)
-        id: nuget-login
+      # Exchanges the OIDC token for a short-lived (1h) nuget.org key. Requires a
+      # Trusted Publishing policy on nuget.org bound to this repo + workflow file.
+      # NUGET_USER is the nuget.org account name, not an email.
+      - name: NuGet login (OIDC to temporary API key)
         uses: NuGet/login@v1
+        id: login
         with:
-          user: ${{ secrets.NUGET_USER }}   # your nuget.org username (profile name), not your email
+          user: ${{ secrets.NUGET_USER }}
 
       - name: Publish to NuGet
-        run: dotnet nuget push "./artifacts/*.nupkg" --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: >
+          dotnet nuget push "./artifacts/*.nupkg"
+          --api-key "${{ steps.login.outputs.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate

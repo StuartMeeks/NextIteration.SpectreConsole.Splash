@@ -9,13 +9,29 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<!-- Underscore naming (`Thing_does_thing`) is idiomatic for xUnit test methods. -->
-		<NoWarn>$(NoWarn);CA1707</NoWarn>
+		<!-- Opts out of the Directory.Build.props default. Test and fixture code
+		     carries no XML docs, and TreatWarningsAsErrors would fail the build
+		     over every missing one. -->
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<!--
+			CA1707 (no underscores in member names) is the xUnit-naming
+			convention everyone uses for readable test names like
+			Method_WhenCondition_ExpectedResult. Let tests use it.
+
+			CA1515 (internal > public) would flag every xUnit fixture —
+			tests need to be public for the runner to discover them.
+
+			CA2007 (ConfigureAwait) doesn't apply in test contexts; there
+			is no SynchronizationContext to recapture.
+		-->
+		<NoWarn>$(NoWarn);CA1707;CA1515;CA2007</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Spectre.Console.Testing" />
 		<PackageReference Include="xunit.v3" />
+		<!-- STANDARD.md 2.6: MTP coverage collector. CI passes the coverage flag. -->
+		<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
 	</ItemGroup>
 
 	<ItemGroup>

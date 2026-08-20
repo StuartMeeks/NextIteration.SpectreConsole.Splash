@@ -1,0 +1,62 @@
+# CodeQL code scanning. See STANDARD.md section 4.4.
+name: CodeQL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Weekly, so a newly published query pack finds existing code even when
+    # nothing has been pushed. Offset off the hour to avoid the scheduling spike.
+    - cron: '37 4 * * 1'
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      security-events: write   # required to upload results
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: csharp
+          # security-and-quality is broader than the default security-extended;
+          # these are small libraries, so the extra findings are affordable.
+          queries: security-and-quality
+
+      # Explicit build rather than autobuild: these repos multi-target, and
+      # autobuild has picked a single TFM in the past, silently analysing half
+      # the code. Restore is separate so a restore failure is legible.
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:csharp"

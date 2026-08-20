@@ -1,0 +1,82 @@
+name: Dependabot auto-merge
+
+# Auto-merges Dependabot minor and patch bumps once CI passes. Major bumps are
+# left untouched so they stay open for manual review.
+#
+# `on: pull_request` (not pull_request_target) is deliberate: pull_request_target
+# would run with a write token in the base-repo context, which is the classic
+# privilege-escalation footgun. On Dependabot pull_request events the GITHUB_TOKEN
+# is read-only by default, and the `permissions:` block below grants the write
+# scopes back. This is GitHub's documented recipe.
+#
+# ---------------------------------------------------------------------------
+# REQUIRED SETUP: the `AUTO_MERGE_PAT` secret must be stored as a
+# **Dependabot secret**, NOT an Actions secret:
+#
+#   Settings -> Secrets and variables -> Dependabot -> New repository secret
+#   gh secret set AUTO_MERGE_PAT --app dependabot
+#
+# Workflows triggered by Dependabot events only receive Dependabot secrets;
+# Actions secrets resolve to an empty string. The guard step below fails loudly
+# if that happens rather than letting the approval silently no-op.
+#
+# The PAT must belong to a CODEOWNER (the main ruleset sets
+# require_code_owner_review: true, and a GITHUB_TOKEN/bot approval cannot
+# satisfy a code-owner review). Scope: fine-grained with
+# "Pull requests: read and write" on this repo, or classic `repo`.
+# ---------------------------------------------------------------------------
+on: pull_request
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+
+    steps:
+      - name: Verify AUTO_MERGE_PAT is present
+        env:
+          AUTO_MERGE_PAT: ${{ secrets.AUTO_MERGE_PAT }}
+        run: |
+          if [ -z "$AUTO_MERGE_PAT" ]; then
+            echo "::error title=Missing AUTO_MERGE_PAT::Store it as a *Dependabot* secret (gh secret set AUTO_MERGE_PAT --app dependabot). Actions secrets are not available to Dependabot-triggered workflows."
+            exit 1
+          fi
+
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # `--auto` does NOT merge immediately: it queues the merge behind the branch
+      # ruleset, so the required check must go green first. That check is `ci` and only
+      # `ci` (STANDARD.md 3.1) — an aggregating gate over `build` and `test`, so the
+      # matrix can be reshaped without touching the ruleset or this comment.
+      # If CI fails, the PR just stays open.
+      #
+      # The approval uses the PAT so it counts as a code-owner review. Because the
+      # ruleset also sets dismiss_stale_reviews_on_push and require_last_push_approval,
+      # a follow-up Dependabot force-push re-triggers this workflow (pull_request
+      # includes `synchronize`) and the PR is re-approved.
+      - name: Approve and enable auto-merge (minor + patch)
+        if: |
+          steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+          steps.meta.outputs.update-type == 'version-update:semver-patch'
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_PAT }}
+        run: |
+          gh pr review --approve "$PR_URL"
+          gh pr merge --auto --squash "$PR_URL"
+
+      # No approval, no auto-merge — the PR stays open for a human.
+      - name: Leave major bumps open
+        if: steps.meta.outputs.update-type == 'version-update:semver-major'
+        env:
+          DEPS: ${{ steps.meta.outputs.dependency-names }}
+        run: |
+          echo "::notice title=Major version bump::${DEPS} is a major bump; leaving this PR open for manual review."
