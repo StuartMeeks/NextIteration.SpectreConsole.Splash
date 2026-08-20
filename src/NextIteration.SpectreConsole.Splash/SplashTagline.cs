@@ -6,7 +6,7 @@ namespace NextIteration.SpectreConsole.Splash
     /// Tagline strategy for the splash screen.
     /// <list type="bullet">
     ///   <item><see cref="None"/> — render no tagline at all.</item>
-    ///   <item><see cref="RandomBuiltIn"/> — pick a random quote from the library's built-in list (~200 quotes).</item>
+    ///   <item><see cref="RandomBuiltIn"/> — pick a random quote from the library's built-in list (~300 quotes).</item>
     ///   <item><see cref="FromProvider"/> — supply your own provider callback.</item>
     /// </list>
     /// </summary>

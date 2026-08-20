@@ -59,6 +59,12 @@ dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_with_u
 
 dotnet_naming_symbols.private_fields.applicable_kinds = field
 dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+# A const IS a field, so without this the rule demands `_nonceSize` for
+# `private const int NonceSize` — PascalCase constants are correct .NET style and
+# the codebase uses them throughout. Restricting the rule to instance fields keeps
+# it aimed at what it was written for. Found when EnforceCodeStyleInBuild surfaced
+# 76 IDE1006 violations, every one of them a constant.
+dotnet_naming_symbols.private_fields.required_modifiers =
 
 dotnet_naming_style.camel_case_with_underscore.capitalization = camel_case
 dotnet_naming_style.camel_case_with_underscore.required_prefix = _
