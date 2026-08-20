@@ -3,9 +3,11 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
+		<!-- Opts out of the Directory.Build.props default. Sample code carries no
+		     XML docs, and TreatWarningsAsErrors would fail the build over every
+		     missing one. Same reasoning as the test project (STANDARD.md 2.7). -->
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

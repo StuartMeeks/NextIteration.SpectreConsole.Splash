@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`Microsoft.SourceLink.GitHub` package reference restored** (§1.7), at the
+  estate-wide version 10.0.400 and with `PrivateAssets="All"` so it is never a
+  consumer dependency. It had been removed as redundant — the .NET 8+ SDK does emit
+  repository metadata and a source-link document map without it, which is accurate as
+  far as it goes — but the standard requires the explicit reference so that source
+  linking is pinned to a version the estate controls rather than moving with whichever
+  SDK feature band happens to build. The `.nuspec`, README, icon and XML docs are
+  unaffected; the assembly and symbols shift slightly (see below).
 - **Canonical CI shape, CodeQL and Dependabot** per
   [NextIteration.Standards](https://github.com/StuartMeeks/NextIteration.Standards)
   `STANDARD.md` section 3 and 4. `ci.yml` now splits into `build`, a three-platform
@@ -26,6 +34,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Central Package Management completed and shared build properties centralised.**
+  `Directory.Packages.props` gains `CentralPackageVersionOverrideEnabled=false`, so a
+  stray inline `Version=` alongside CPM is now a hard build failure instead of being
+  silently ignored (§1.3). The seventeen properties every project restated now live in
+  the root `Directory.Build.props` (§1.2); each csproj keeps only what is genuinely its
+  own. Non-shipping projects (tests, demo) set `GenerateDocumentationFile=false` to opt
+  back out. Verified behaviour-preserving: packed before and after from a clean `obj/`
+  at the same commit, every entry in both the `.nupkg` and `.snupkg` is byte-identical
+  bar the per-pack `.psmdcp` name.
 - **Adopted the standards baseline docs, editor config and SDK pin.**
   `SECURITY.md`, `CONTRIBUTING.md`, `CLAUDE.md` and a pull request template added;
   `.gitignore` and `.editorconfig` replaced with the canonical copies; `global.json`
@@ -38,7 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`SplashTagline.RandomBuiltIn`'s XML doc corrected** from "~200 quotes" to
   "~300": the built-in pool holds 313 entries. Documentation only; the pool itself
   is unchanged.
-
 - **Test suite migrated to xUnit.net v3 (`xunit.v3` 4.0.0)** from `xunit` 2.9.3.
   Contributor-facing only — no library code, public API, or shipped package
   contents changed. v3 test projects are self-executing console apps and run on
@@ -53,19 +69,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the suite ran on `net10.0` only. Running the full suite locally now requires
   the .NET 8 runtime alongside the .NET 10 SDK.
 
-### Removed
-
-- **`Microsoft.SourceLink.GitHub` package reference.** The .NET SDK has bundled
-  SourceLink since .NET 8; the explicit reference was redundant. Verified
-  byte-identical `.nuspec` and `.snupkg` output either way — consumers still get
-  repository metadata and step-through sources.
-
 ### Fixed
 
-- **`PackageOutputPath` no longer breaks non-Windows builds.** The hardcoded
-  `C:\nuget-local\` local dev feed is now guarded to Windows; previously every
-  `dotnet build` on Linux/macOS and in CI created a literal `C:\nuget-local\`
-  directory under `src/`.
+- **`PackageOutputPath` no longer points at a machine-local path.** Pack output
+  goes to `artifacts/packages` on every platform (§1.8). It previously pointed at
+  a hardcoded `C:\nuget-local\` dev feed; unguarded that created a literal
+  `C:\nuget-local\` directory under `src/` on Linux, macOS and in CI, and even
+  guarded to Windows it made one contributor's machine layout part of repo config.
 - **CI publish job could not check out the repo.** Its `permissions` block listed
   only `id-token: write`, and GitHub sets every unlisted scope to `none`, leaving
   `actions/checkout` without `contents: read`.
