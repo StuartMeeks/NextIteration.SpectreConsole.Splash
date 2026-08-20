@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   single required status check, so the matrix can be reshaped without touching branch
   protection. Adds `codeql.yml` (§4.4), `dependabot.yml` (§4.6) and
   `dependabot-auto-merge.yml` (§4.7), plus per-workflow `concurrency`,
-  `timeout-minutes` and a NuGet restore cache (§3.5–3.7).
+  `timeout-minutes` and a NuGet restore cache (§3.5–3.7). CodeQL analysis excludes
+  `**/obj/**` and `**/bin/**`, so generated and compiled output — the xUnit
+  auto-generated entry point among it — raises no findings.
 - **Code coverage is collected** via `Microsoft.Testing.Extensions.CodeCoverage`, the
   Microsoft.Testing.Platform equivalent of coverlet (§2.6). CI invokes it and uploads
   the result per platform. Contributor-facing only; the collector is test-only and does
