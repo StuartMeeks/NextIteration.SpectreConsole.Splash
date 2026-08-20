@@ -1,8 +1,41 @@
 <Project>
+
+  <!--
+    STANDARD.md 1.2: every property that is identical across projects lives here
+    rather than being restated per csproj. Fifteen copies is fifteen chances to
+    diverge, and the divergence is silent — nothing fails when one csproj quietly
+    disagrees with its sibling about DebugType.
+
+    A csproj carries only what is genuinely specific to it: PackageId, Version,
+    Description, PackageTags, TargetFrameworks, the package's own URLs, and any
+    real exception. A non-shipping project (tests, a demo) sets
+    GenerateDocumentationFile=false to opt back out — sample and fixture code has
+    no XML docs, and TreatWarningsAsErrors would otherwise fail the build over
+    every missing one.
+
+    EnforceCodeStyleInBuild is deliberately absent. STANDARD.md 1.2.1 is blocked:
+    TreatWarningsAsErrors promotes every advisory .editorconfig preference to a
+    hard failure, which produced 490 build errors in Auth. It needs a per-rule
+    gate-versus-advisory decision before it can be added here.
+  -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>© Stuart Meeks</Copyright>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Authors>Stuart Meeks</Authors>
     <Company>Next Iteration</Company>
   </PropertyGroup>
+
 </Project>

@@ -1,12 +1,26 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!--
+      Hard-fail if a csproj declares <PackageReference Version="…" /> alongside
+      CPM. Without this MSBuild silently ignores the inline version and uses the
+      central one — which is the exact drift this file exists to prevent, and it
+      prevents it without ever saying so. See STANDARD.md 1.3.
+    -->
+    <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Not runtime-aligned: a single common floor at the version actually built
+         and tested against. All three are pre-1.0 and version independently of the
+         .NET runtime, so a per-TFM floor would be meaningless — breaking changes
+         land between minors. STANDARD.md 1.5, not 1.4. -->
     <PackageVersion Include="Figgle" Version="0.6.6" />
     <PackageVersion Include="Figgle.Fonts" Version="0.6.6" />
     <PackageVersion Include="Spectre.Console" Version="0.57.2" />
+    <!-- Build-time only (PrivateAssets=All), never a consumer dependency.
+         STANDARD.md 1.7, at the estate-wide version. -->
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.400" />
   </ItemGroup>
 
   <ItemGroup Label="Test">

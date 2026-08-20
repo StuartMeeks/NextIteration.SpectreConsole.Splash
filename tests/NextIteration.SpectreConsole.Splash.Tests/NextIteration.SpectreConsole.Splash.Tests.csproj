@@ -6,7 +6,6 @@
 		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
 		<!-- xUnit.net v3 test projects are self-executing console apps. -->
 		<OutputType>Exe</OutputType>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<!-- Opts out of the Directory.Build.props default. Test and fixture code

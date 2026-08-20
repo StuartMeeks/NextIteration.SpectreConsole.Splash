@@ -1,37 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+	<!--
+		Only what is specific to this project. Everything shared with the test and
+		demo projects lives in the root Directory.Build.props (STANDARD.md 1.2).
+	-->
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net10.0</TargetFrameworks>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AnalysisLevel>latest</AnalysisLevel>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<PackageId>NextIteration.SpectreConsole.Splash</PackageId>
 		<Version>0.3.0</Version>
 		<Description>Configurable Figgle + Spectre.Console splash screen for .NET CLIs — gradient palette, pluggable tagline strategy, single-markup-call render path.</Description>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<!-- Local dev feed, Windows only. Unguarded this created a literal
-		     `C:\nuget-local\` directory on Linux/macOS and in CI. -->
-		<PackageOutputPath Condition="$([MSBuild]::IsOSPlatform('Windows'))">C:\nuget-local\</PackageOutputPath>
+		<GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
+		<PackageOutputPath>$(MSBuildThisFileDirectory)..\..\artifacts\packages</PackageOutputPath>
 		<IncludeBuildOutput>true</IncludeBuildOutput>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>spectre;cli;splash;figgle;ascii-art</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
-		<Copyright>© Stuart Meeks</Copyright>
-		<EnablePackageValidation>true</EnablePackageValidation>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<DebugType>portable</DebugType>
-		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,6 +31,7 @@
 		<PackageReference Include="Figgle" />
 		<PackageReference Include="Figgle.Fonts" />
 		<PackageReference Include="Spectre.Console" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 		<None Include="icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
