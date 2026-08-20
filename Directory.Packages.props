@@ -12,5 +12,14 @@
   <ItemGroup Label="Test">
     <PackageVersion Include="Spectre.Console.Testing" Version="0.57.2" />
     <PackageVersion Include="xunit.v3" Version="4.0.0" />
+    <!--
+      STANDARD.md 2.6: the Microsoft.Testing.Platform coverage collector, the MTP
+      equivalent of coverlet. Do NOT add Microsoft.NET.Test.Sdk,
+      xunit.runner.visualstudio or coverlet.collector: all three are VSTest-only and
+      MTP replaces the runner outright (2.5). CI invokes this with the coverage flag
+      after the test-platform argument separator — a collector that is referenced but
+      never invoked reads as coverage in the dependency list while producing no data.
+    -->
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
   </ItemGroup>
 </Project>

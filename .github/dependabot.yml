@@ -1,0 +1,66 @@
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # NuGet packages (src + tests)
+  #
+  # Minor and patch bumps are grouped into a single PR so the auto-merge
+  # workflow has one unambiguous update-type to act on. Major bumps are
+  # deliberately left OUT of the group, so each arrives as its own PR and
+  # stays open for manual review.
+  #
+  # There is deliberately NO `ignore` block here. STANDARD.md 4.10 requires one
+  # entry per package carrying a per-TFM floor (STANDARD.md 1.4), and this repo
+  # has none: Figgle, Figgle.Fonts and Spectre.Console are all pre-1.0 and
+  # version independently of the .NET runtime, so they take a single common
+  # floor (1.5) and their majors are genuinely reviewable. An `ignore` entry for
+  # a package this repo does not floor per TFM would assert a policy that does
+  # not exist here -- which is why 4.6 is a structural clause and not a
+  # byte-identity one. Add entries here only if a runtime-aligned
+  # `Microsoft.Extensions.*`-style dependency is ever introduced.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - dependencies
+      - nuget
+    groups:
+      nuget-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions used by ci.yml (checkout, setup-dotnet, cache, upload/download
+  # artifact, NuGet/login) and codeql.yml. Same grouping rule as NuGet.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(actions)"
+    labels:
+      - dependencies
+      - github-actions
+    groups:
+      actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch

@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Canonical CI shape, CodeQL and Dependabot** per
+  [NextIteration.Standards](https://github.com/StuartMeeks/NextIteration.Standards)
+  `STANDARD.md` section 3 and 4. `ci.yml` now splits into `build`, a three-platform
+  `test` matrix, an aggregating `ci` gate and a tag-gated `publish`; the gate is the
+  single required status check, so the matrix can be reshaped without touching branch
+  protection. Adds `codeql.yml` (§4.4), `dependabot.yml` (§4.6) and
+  `dependabot-auto-merge.yml` (§4.7), plus per-workflow `concurrency`,
+  `timeout-minutes` and a NuGet restore cache (§3.5–3.7).
+- **Code coverage is collected** via `Microsoft.Testing.Extensions.CodeCoverage`, the
+  Microsoft.Testing.Platform equivalent of coverlet (§2.6). CI invokes it and uploads
+  the result per platform. Contributor-facing only; the collector is test-only and does
+  not reach the package.
+
 ### Changed
 
 - **Test suite migrated to xUnit.net v3 (`xunit.v3` 4.0.0)** from `xunit` 2.9.3.
