@@ -9,8 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.0.0] — 2026-08-21
+
+First stable release. The public surface — `SplashScreen`, `SplashOptions`,
+`SplashColors` and `SplashTagline` — is considered stable, and from this release the
+package follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from a 1.0
+baseline: a breaking change to that surface bumps the major version. **No public API
+changed in 1.0.0.** It is a stability commitment over the 0.3.0 surface, released
+together with the accumulated repository-standards conformance work below (the estate
+baseline in
+[NextIteration.Standards](https://github.com/StuartMeeks/NextIteration.Standards)).
+
 ### Added
 
+- **The house style is now gated in-build.** `EnforceCodeStyleInBuild` is `true`
+  (§1.2.1) and the canonical `.editorconfig` (§5.2) is a deliberate allow-list of named
+  style gates — braces always, `var` throughout, `System`-first using order, and the
+  full naming ruleset — each a hard build failure under `TreatWarningsAsErrors`. The
+  library, test and demo code was brought to green under the flag: the changes are
+  brace insertion on single-statement `if`s, explicit-type-to-`var`, `System`-first
+  using reordering, single-line expression bodies in the tests, and removal of
+  gratuitous `_ =` discards (the estate house rule — write the call plainly).
+  Behaviour-preserving; no public API or rendered output changed. This is the per-repo
+  rollout the standard tracks, not a code redesign — the single `AnsiConsole.Markup`
+  render path, its markup escaping, and the space fast-path are untouched.
 - **`Microsoft.SourceLink.GitHub` package reference restored** (§1.7), at the
   estate-wide version 10.0.400 and with `PrivateAssets="All"` so it is never a
   consumer dependency. It had been removed as redundant — the .NET 8+ SDK does emit
@@ -36,6 +60,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **CodeQL config gained a `query-filters` block** (§4.4) excluding exactly the two
+  audit queries `cs/unmanaged-code` and `cs/call-to-unmanaged-code`, which fire on every
+  P/Invoke declaration and call site. This repo has no P/Invoke, so the filter matches
+  nothing here — it is carried harmlessly so the workflow stays byte-identical to the
+  estate template (§3.0.1). Every other `security-and-quality` query still runs.
+- **Test and demo projects suppress `IDE0005`** (§2.7). `IDE0005` (remove unnecessary
+  usings) only runs in-build when `GenerateDocumentationFile` is `true`, which both
+  non-shipping projects set to `false`; once `EnforceCodeStyleInBuild` gates it as a
+  warning, the build would otherwise hard-error demanding the doc file be enabled.
+  Suppressing it there resolves the conflict while `IDE0005` still gates the shipping
+  project, where the doc file is on.
 - **Central Package Management completed and shared build properties centralised.**
   `Directory.Packages.props` gains `CentralPackageVersionOverrideEnabled=false`, so a
   stray inline `Version=` alongside CPM is now a hard build failure instead of being
@@ -159,7 +194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interpolation, colour validation, tagline strategies, renderer output,
   and the quote pool).
 
-[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.3.0
 [0.2.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.2.0
 [0.1.2]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.2
