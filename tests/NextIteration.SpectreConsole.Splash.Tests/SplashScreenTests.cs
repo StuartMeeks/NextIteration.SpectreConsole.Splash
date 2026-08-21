@@ -1,6 +1,8 @@
 using NextIteration.SpectreConsole.Splash;
+
 using Spectre.Console;
 using Spectre.Console.Testing;
+
 using Xunit;
 
 namespace NextIteration.SpectreConsole.Splash.Tests
@@ -8,10 +10,7 @@ namespace NextIteration.SpectreConsole.Splash.Tests
     public class SplashScreenTests
     {
         [Fact]
-        public void Show_with_null_options_throws()
-        {
-            Assert.Throws<ArgumentNullException>(() => SplashScreen.Show((SplashOptions)null!));
-        }
+        public void Show_with_null_options_throws() => Assert.Throws<ArgumentNullException>(() => SplashScreen.Show((SplashOptions)null!));
 
         [Fact]
         public void Show_with_empty_appName_throws()

@@ -1,8 +1,19 @@
 root = true
 
-# -------------------------------
-# General
-# -------------------------------
+# ============================================================
+# Canonical .editorconfig for the NextIteration estate.
+#
+# Copied verbatim into every governed repo (STANDARD.md §5.2).
+# Posture: a DELIBERATE ALLOW-LIST of style gates — there is no
+# blanket `dotnet_analyzer_diagnostic.severity`, so a style rule a
+# future SDK ships never auto-gates the build. Every rule that IS
+# gated below (`:warning`) is a hard build failure under
+# `TreatWarningsAsErrors`; that is intentional — the build is what
+# forces the code into the ordained style. Code-quality (CA) rules
+# keep their `AnalysisLevel=latest` defaults.
+# ============================================================
+
+# ---------- All files ----------
 [*]
 charset = utf-8
 end_of_line = lf
@@ -11,99 +22,136 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-# -------------------------------
-# C# files
-# -------------------------------
-[*.cs]
+[*.{csproj,props,targets}]
+indent_size = 2
 
+[*.{json,yml,yaml}]
+indent_size = 2
+
+# Trailing whitespace is a hard line break in Markdown
+[*.md]
+trim_trailing_whitespace = false
+
+# ---------- C# ----------
+[*.cs]
 indent_size = 4
 
-# New lines & braces
+# Braces & new lines
 csharp_new_line_before_open_brace = all
-csharp_prefer_braces = true:warning
+csharp_prefer_braces = true:warning                             # braces always (IDE0011)
 
-# Using directives
-dotnet_sort_system_directives_first = true
-dotnet_separate_import_directive_groups = true
+# Namespaces — block-scoped estate-wide (IDE0160)
+csharp_style_namespace_declarations = block_scoped:warning
 
-# var usage (Spectre-style: pragmatic)
-csharp_style_var_for_built_in_types = true:suggestion
-csharp_style_var_when_type_is_apparent = true:suggestion
-csharp_style_var_elsewhere = false:suggestion
+# using directives
+csharp_using_directive_placement = outside_namespace:warning    # IDE0065
+dotnet_sort_system_directives_first = true                      # feeds IDE0055 (gated below)
+dotnet_separate_import_directive_groups = true                  # feeds IDE0055 — matches estate style
 
-# Expression-bodied members (used where clean)
-csharp_style_expression_bodied_methods = when_on_single_line:suggestion
-csharp_style_expression_bodied_constructors = false:suggestion
-csharp_style_expression_bodied_operators = when_on_single_line:suggestion
-csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+# 'this.' qualification — never used in this estate
+dotnet_style_qualification_for_field = false:warning            # IDE0003
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
 
-# Pattern matching / modern C#
-csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
-csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+# Accessibility — always explicit
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning   # IDE0040
 
-# Nullability helpers
-dotnet_style_null_propagation = true:suggestion
-dotnet_style_coalesce_expression = true:suggestion
+# var — ordained: var everywhere it is legal (IDE0007)
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_when_type_is_apparent = true:warning
+csharp_style_var_elsewhere = true:warning
 
-# Readonly fields
-dotnet_style_readonly_field = true:suggestion
+# Expression-bodied members — single-line only; block-bodied constructors (IDE0021-0027)
+csharp_style_expression_bodied_methods = when_on_single_line:warning
+csharp_style_expression_bodied_constructors = false:warning
+csharp_style_expression_bodied_operators = when_on_single_line:warning
+csharp_style_expression_bodied_properties = when_on_single_line:warning
 
-# -------------------------------
-# Naming
-# -------------------------------
+# Pattern matching / null handling (IDE0019/0020/0029/0030/0031)
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+csharp_style_pattern_matching_over_as_with_null_check = true:warning
+dotnet_style_null_propagation = true:warning
+dotnet_style_coalesce_expression = true:warning
 
-# Private fields: _camelCase
-dotnet_naming_rule.private_fields_should_be_camel_case.severity = suggestion
-dotnet_naming_rule.private_fields_should_be_camel_case.symbols = private_fields
-dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_with_underscore
+# readonly fields (IDE0044) — only flags never-reassigned fields, so genuinely mutable state is safe
+dotnet_style_readonly_field = true:warning
 
-dotnet_naming_symbols.private_fields.applicable_kinds = field
-dotnet_naming_symbols.private_fields.applicable_accessibilities = private
-# A const IS a field, so without this the rule demands `_nonceSize` for
-# `private const int NonceSize` — PascalCase constants are correct .NET style and
-# the codebase uses them throughout. Restricting the rule to instance fields keeps
-# it aimed at what it was written for. Found when EnforceCodeStyleInBuild surfaced
-# 76 IDE1006 violations, every one of them a constant.
-dotnet_naming_symbols.private_fields.required_modifiers =
+# Modern syntax — gated toward the modern form
+dotnet_style_prefer_collection_expression = when_types_loosely_match:warning       # IDE0300+
+csharp_style_implicit_object_creation_when_type_is_apparent = true:warning         # IDE0090
 
-dotnet_naming_style.camel_case_with_underscore.capitalization = camel_case
-dotnet_naming_style.camel_case_with_underscore.required_prefix = _
+# Primary constructors — NOT forced. IDE0290 is one-directional (it can only push toward primary
+# constructors), and forcing them onto service classes with real initialisation is a downgrade.
+# Advisory only; existing class primary constructors are left as they are.
+csharp_style_prefer_primary_constructors = false:suggestion                        # IDE0290
 
-# Interfaces: IMyInterface
-dotnet_naming_rule.interfaces_should_start_with_i.severity = suggestion
-dotnet_naming_rule.interfaces_should_start_with_i.symbols = interfaces
-dotnet_naming_rule.interfaces_should_start_with_i.style = interface_prefix
+# Unused expression/assignment values — never nudge toward `_ =` discards (IDE0058/IDE0059).
+# House rule: no discard solely to swallow a return value (see CLAUDE.md for the carve-outs).
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent
+csharp_style_unused_value_assignment_preference = discard_variable:silent
 
-dotnet_naming_symbols.interfaces.applicable_kinds = interface
+# ---------- Naming (gated) ----------
+# Matches estate reality: _camelCase private fields (incl. static readonly), PascalCase const
+# fields, PascalCase types/members, I-prefixed interfaces, T-prefixed type parameters, camelCase
+# locals/parameters. `const_fields` is declared before `private_fields`: a const is a field, so
+# both specs match it and precedence decides — const → PascalCase must win.
 
+# Styles
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_naming_style.camel_case_underscore.required_prefix = _
+dotnet_naming_style.camel_case_underscore.capitalization = camel_case
+dotnet_naming_style.camel_case_plain.capitalization = camel_case
 dotnet_naming_style.interface_prefix.required_prefix = I
 dotnet_naming_style.interface_prefix.capitalization = pascal_case
+dotnet_naming_style.type_param_prefix.required_prefix = T
+dotnet_naming_style.type_param_prefix.capitalization = pascal_case
 
-# -------------------------------
-# Analyzers
-# -------------------------------
+# Symbols
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
+dotnet_naming_symbols.types.applicable_kinds = class, struct, enum, delegate
+dotnet_naming_symbols.non_field_members.applicable_kinds = property, method, event
+dotnet_naming_symbols.const_fields.applicable_kinds = field
+dotnet_naming_symbols.const_fields.required_modifiers = const
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private, protected, private_protected, internal, protected_internal
+dotnet_naming_symbols.locals_and_params.applicable_kinds = parameter, local
 
-# Keep warnings visible but not painful
-dotnet_analyzer_diagnostic.severity = warning
+# Rules (all warning = gated)
+dotnet_naming_rule.interfaces_i.severity = warning
+dotnet_naming_rule.interfaces_i.symbols = interfaces
+dotnet_naming_rule.interfaces_i.style = interface_prefix
 
-# Unused usings
-dotnet_diagnostic.IDE0005.severity = warning
+dotnet_naming_rule.type_params_t.severity = warning
+dotnet_naming_rule.type_params_t.symbols = type_parameters
+dotnet_naming_rule.type_params_t.style = type_param_prefix
 
-# Simplification
-dotnet_diagnostic.IDE0007.severity = suggestion
-dotnet_diagnostic.IDE0008.severity = suggestion
+dotnet_naming_rule.types_pascal.severity = warning
+dotnet_naming_rule.types_pascal.symbols = types
+dotnet_naming_rule.types_pascal.style = pascal_case
 
-# Documentation (Spectre.Console is pragmatic here)
-dotnet_diagnostic.CS1591.severity = silent
+dotnet_naming_rule.members_pascal.severity = warning
+dotnet_naming_rule.members_pascal.symbols = non_field_members
+dotnet_naming_rule.members_pascal.style = pascal_case
 
-# -------------------------------
-# JSON / YAML
-# -------------------------------
-[*.json]
-indent_size = 2
+dotnet_naming_rule.const_pascal.severity = warning
+dotnet_naming_rule.const_pascal.symbols = const_fields
+dotnet_naming_rule.const_pascal.style = pascal_case
 
-[*.yml]
-indent_size = 2
+dotnet_naming_rule.private_underscore.severity = warning
+dotnet_naming_rule.private_underscore.symbols = private_fields
+dotnet_naming_rule.private_underscore.style = camel_case_underscore
 
-[*.yaml]
-indent_size = 2
+dotnet_naming_rule.locals_camel.severity = warning
+dotnet_naming_rule.locals_camel.symbols = locals_and_params
+dotnet_naming_rule.locals_camel.style = camel_case_plain
+
+# ---------- Option-less / compiler severities ----------
+dotnet_diagnostic.IDE0005.severity = warning   # unnecessary usings (needs GenerateDocumentationFile — set by §1.6)
+dotnet_diagnostic.IDE0055.severity = warning   # formatting: whitespace, using sort/groups
+dotnet_diagnostic.CS1591.severity = warning    # public members MUST carry XML docs (STANDARD §1.6, CLAUDE.md non-negotiable)
+
+# ---------- Deliberate exemptions (advisory, never gate) ----------
+dotnet_diagnostic.IDE0046.severity = suggestion  # convert to conditional expression — nested ternaries hurt readability
+dotnet_diagnostic.IDE0058.severity = suggestion  # unused expression value — see the discard house rule above

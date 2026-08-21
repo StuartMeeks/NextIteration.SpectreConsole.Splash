@@ -1,5 +1,7 @@
 using NextIteration.SpectreConsole.Splash.Internal;
+
 using Spectre.Console;
+
 using Xunit;
 
 namespace NextIteration.SpectreConsole.Splash.Tests
