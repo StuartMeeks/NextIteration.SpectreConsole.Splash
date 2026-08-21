@@ -1,5 +1,7 @@
 using Figgle.Fonts;
+
 using NextIteration.SpectreConsole.Splash;
+
 using Spectre.Console;
 
 // Demo 1 — all defaults (Roman font, neutral blue gradient, random built-in tagline).

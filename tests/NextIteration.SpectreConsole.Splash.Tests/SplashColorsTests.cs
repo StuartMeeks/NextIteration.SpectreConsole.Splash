@@ -1,4 +1,5 @@
 using NextIteration.SpectreConsole.Splash;
+
 using Xunit;
 
 namespace NextIteration.SpectreConsole.Splash.Tests
@@ -6,16 +7,10 @@ namespace NextIteration.SpectreConsole.Splash.Tests
     public class SplashColorsTests
     {
         [Fact]
-        public void Ctor_rejects_empty_stop_list()
-        {
-            Assert.Throws<ArgumentException>(() => new SplashColors());
-        }
+        public void Ctor_rejects_empty_stop_list() => Assert.Throws<ArgumentException>(() => new SplashColors());
 
         [Fact]
-        public void Ctor_rejects_null()
-        {
-            Assert.Throws<ArgumentNullException>(() => new SplashColors(null!));
-        }
+        public void Ctor_rejects_null() => Assert.Throws<ArgumentNullException>(() => new SplashColors(null!));
 
         [Theory]
         [InlineData("#GGGGGG")]   // non-hex digit
@@ -23,10 +18,7 @@ namespace NextIteration.SpectreConsole.Splash.Tests
         [InlineData("#12345678")] // too long
         [InlineData("123456")]    // missing '#'
         [InlineData("")]          // empty
-        public void Ctor_rejects_malformed_hex(string bad)
-        {
-            Assert.Throws<ArgumentException>(() => new SplashColors(bad));
-        }
+        public void Ctor_rejects_malformed_hex(string bad) => Assert.Throws<ArgumentException>(() => new SplashColors(bad));
 
         [Theory]
         [InlineData("#000000")]

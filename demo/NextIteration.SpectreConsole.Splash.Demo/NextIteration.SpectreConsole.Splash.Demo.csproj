@@ -8,6 +8,11 @@
 		     XML docs, and TreatWarningsAsErrors would fail the build over every
 		     missing one. Same reasoning as the test project (STANDARD.md 2.7). -->
 		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<!-- IDE0005 only runs in-build when GenerateDocumentationFile is true (off
+		     here), but EnforceCodeStyleInBuild + the canonical .editorconfig gate it
+		     as a warning, which hard-errors demanding the doc file be enabled. Suppress
+		     it, exactly as the test project does (STANDARD.md 2.7). -->
+		<NoWarn>$(NoWarn);IDE0005</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

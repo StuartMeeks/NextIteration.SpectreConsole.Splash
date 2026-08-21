@@ -13,16 +13,18 @@
     no XML docs, and TreatWarningsAsErrors would otherwise fail the build over
     every missing one.
 
-    EnforceCodeStyleInBuild is deliberately absent. STANDARD.md 1.2.1 is blocked:
-    TreatWarningsAsErrors promotes every advisory .editorconfig preference to a
-    hard failure, which produced 490 build errors in Auth. It needs a per-rule
-    gate-versus-advisory decision before it can be added here.
+    EnforceCodeStyleInBuild is on (STANDARD.md 1.2.1). It runs the IDE analyzers
+    in-build, so the canonical .editorconfig (5.2) actually gates the house style
+    rather than merely documenting it. The blanket severity that once turned every
+    advisory preference into an error (490 in Auth) is gone; .editorconfig is now a
+    deliberate allow-list of named gates. See 1.2.1 for the per-rule decisions.
   -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnablePackageValidation>true</EnablePackageValidation>
     <IncludeSymbols>true</IncludeSymbols>

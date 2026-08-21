@@ -49,10 +49,24 @@ jobs:
           # Analyse source only. obj/ and bin/ hold generated and compiled
           # output — e.g. the xUnit auto-generated entry point — so findings
           # there are noise against code no human maintains.
+          #
+          # query-filters excludes the two audit queries that fire on every
+          # P/Invoke declaration and call site (cs/unmanaged-code,
+          # cs/call-to-unmanaged-code). Native-backend packages (Keychain,
+          # libsecret, DPAPI) exist to call unmanaged code, so these are pure
+          # noise there and non-native repos have no P/Invoke for them to hit.
+          # This excludes ONLY those two queries — every other
+          # security-and-quality query still runs on the interop files, so no
+          # real finding is lost (STANDARD.md 4.4).
           config: |
             paths-ignore:
               - "**/obj/**"
               - "**/bin/**"
+            query-filters:
+              - exclude:
+                  id: cs/unmanaged-code
+              - exclude:
+                  id: cs/call-to-unmanaged-code
 
       # Explicit build rather than autobuild: these repos multi-target, and
       # autobuild has picked a single TFM in the past, silently analysing half
