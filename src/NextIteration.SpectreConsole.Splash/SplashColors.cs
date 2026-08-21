@@ -54,7 +54,7 @@ namespace NextIteration.SpectreConsole.Splash
                 throw new ArgumentException(
                     $"Hex colour must be in '#RRGGBB' form, got '{hex}'.", nameof(hex));
             }
-            for (int i = 1; i < 7; i++)
+            for (var i = 1; i < 7; i++)
             {
                 var c = hex[i];
                 var isHex = (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');

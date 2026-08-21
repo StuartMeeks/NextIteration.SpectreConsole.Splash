@@ -1,4 +1,5 @@
 using NextIteration.SpectreConsole.Splash;
+
 using Xunit;
 
 namespace NextIteration.SpectreConsole.Splash.Tests
@@ -6,10 +7,7 @@ namespace NextIteration.SpectreConsole.Splash.Tests
     public class SplashTaglineTests
     {
         [Fact]
-        public void None_resolves_to_null()
-        {
-            Assert.Null(SplashTagline.None.Resolve());
-        }
+        public void None_resolves_to_null() => Assert.Null(SplashTagline.None.Resolve());
 
         [Fact]
         public void RandomBuiltIn_resolves_to_a_non_empty_string()
@@ -36,9 +34,6 @@ namespace NextIteration.SpectreConsole.Splash.Tests
         }
 
         [Fact]
-        public void FromProvider_rejects_null_callback()
-        {
-            Assert.Throws<ArgumentNullException>(() => SplashTagline.FromProvider(null!));
-        }
+        public void FromProvider_rejects_null_callback() => Assert.Throws<ArgumentNullException>(() => SplashTagline.FromProvider(null!));
     }
 }

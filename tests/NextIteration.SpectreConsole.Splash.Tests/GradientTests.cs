@@ -1,4 +1,5 @@
 using NextIteration.SpectreConsole.Splash.Internal;
+
 using Xunit;
 
 namespace NextIteration.SpectreConsole.Splash.Tests
@@ -90,7 +91,10 @@ namespace NextIteration.SpectreConsole.Splash.Tests
             // Regression guard: 20 stops, 200 cols = 4000 ops, must still
             // produce coherent output (endpoints anchored).
             var stops = new string[20];
-            for (int i = 0; i < 20; i++) stops[i] = i % 2 == 0 ? "#000000" : "#FFFFFF";
+            for (var i = 0; i < 20; i++)
+            {
+                stops[i] = i % 2 == 0 ? "#000000" : "#FFFFFF";
+            }
 
             var result = Gradient.Generate(stops, 200);
 

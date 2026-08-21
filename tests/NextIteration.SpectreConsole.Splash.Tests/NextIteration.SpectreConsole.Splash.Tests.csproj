@@ -22,8 +22,15 @@
 
 			CA2007 (ConfigureAwait) doesn't apply in test contexts; there
 			is no SynchronizationContext to recapture.
+
+			IDE0005 (remove unnecessary usings) only runs in-build when
+			GenerateDocumentationFile is true, which is false here. Once
+			EnforceCodeStyleInBuild is on (§1.2.1) the canonical .editorconfig
+			gates IDE0005 as a warning, so a test project would hard-error
+			demanding the doc file be enabled. Suppressing it resolves the
+			conflict; IDE0005 still gates the shipping project. STANDARD.md 2.7.
 		-->
-		<NoWarn>$(NoWarn);CA1707;CA1515;CA2007</NoWarn>
+		<NoWarn>$(NoWarn);CA1707;CA1515;CA2007;IDE0005</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

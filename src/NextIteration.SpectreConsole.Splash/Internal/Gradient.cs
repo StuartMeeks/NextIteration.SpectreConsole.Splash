@@ -17,11 +17,14 @@ namespace NextIteration.SpectreConsole.Splash.Internal
         /// </summary>
         public static Color[] Generate(IReadOnlyList<string> hexStops, int width)
         {
-            if (width <= 0) return [];
+            if (width <= 0)
+            {
+                return [];
+            }
 
             // Convert hex → RGB once.
             var stops = new (byte R, byte G, byte B)[hexStops.Count];
-            for (int i = 0; i < hexStops.Count; i++)
+            for (var i = 0; i < hexStops.Count; i++)
             {
                 stops[i] = HexToRgb(hexStops[i]);
             }
@@ -50,11 +53,15 @@ namespace NextIteration.SpectreConsole.Splash.Internal
             var segments = stops.Length - 1;
             var step = (float)segments / (width - 1);
 
-            for (int i = 0; i < width; i++)
+            for (var i = 0; i < width; i++)
             {
                 var t = i * step;
                 var segment = (int)t;
-                if (segment >= segments) segment = segments - 1;
+                if (segment >= segments)
+                {
+                    segment = segments - 1;
+                }
+
                 var fraction = t - segment;
 
                 var a = stops[segment];

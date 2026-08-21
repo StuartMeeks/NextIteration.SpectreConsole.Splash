@@ -1,4 +1,5 @@
 using NextIteration.SpectreConsole.Splash.Internal;
+
 using Spectre.Console;
 
 namespace NextIteration.SpectreConsole.Splash
@@ -58,19 +59,26 @@ namespace NextIteration.SpectreConsole.Splash
         {
             var max = 0;
             var start = 0;
-            for (int i = 0; i < logo.Length; i++)
+            for (var i = 0; i < logo.Length; i++)
             {
                 if (logo[i] == '\n')
                 {
                     var end = i > start && logo[i - 1] == '\r' ? i - 1 : i;
                     var len = end - start;
-                    if (len > max) max = len;
+                    if (len > max)
+                    {
+                        max = len;
+                    }
+
                     start = i + 1;
                 }
             }
             // Trailing line without newline.
             var tailLen = logo.Length - start;
-            if (tailLen > max) max = tailLen;
+            if (tailLen > max)
+            {
+                max = tailLen;
+            }
             return max;
         }
     }
