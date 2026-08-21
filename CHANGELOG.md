@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.0.0] — 2026-08-21
+
+First stable release. The public surface — `SplashScreen`, `SplashOptions`,
+`SplashColors` and `SplashTagline` — is considered stable, and from this release the
+package follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html) from a 1.0
+baseline: a breaking change to that surface bumps the major version. **No public API
+changed in 1.0.0.** It is a stability commitment over the 0.3.0 surface, released
+together with the accumulated repository-standards conformance work below (the estate
+baseline in
+[NextIteration.Standards](https://github.com/StuartMeeks/NextIteration.Standards)).
+
 ### Added
 
 - **The house style is now gated in-build.** `EnforceCodeStyleInBuild` is `true`
@@ -181,7 +194,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   interpolation, colour validation, tagline strategies, renderer output,
   and the quote pool).
 
-[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.3.0
 [0.2.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.2.0
 [0.1.2]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.1.2
