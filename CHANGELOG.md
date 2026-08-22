@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Two CodeQL `security-and-quality` findings resolved with genuine changes.**
+  `SplashColors.ValidateHex` no longer hand-rolls the hex-digit range test
+  (`cs/complex-condition`): the three chained comparisons are replaced by the canonical
+  `char.IsAsciiHexDigit`, which is available on both shipped target frameworks and reads
+  as the intent. The two `TestConsole` instances in `SplashScreenTests` are now disposed
+  via `using` (`cs/local-not-disposed`); `TestConsole` is `IDisposable` and both were
+  leaking. No behaviour, public API or rendered output changed.
+
 ---
 
 ## [1.0.0] — 2026-08-21

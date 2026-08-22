@@ -25,7 +25,7 @@ namespace NextIteration.SpectreConsole.Splash.Tests
             // Redirecting AnsiConsole.Console to a test console lets us
             // confirm the single-Markup call actually produces output.
             var prev = AnsiConsole.Console;
-            var test = new TestConsole();
+            using var test = new TestConsole();
             AnsiConsole.Console = test;
             try
             {
@@ -49,7 +49,7 @@ namespace NextIteration.SpectreConsole.Splash.Tests
         public void Show_with_custom_tagline_emits_it()
         {
             var prev = AnsiConsole.Console;
-            var test = new TestConsole().Width(120);
+            using var test = new TestConsole().Width(120);
             AnsiConsole.Console = test;
             try
             {
