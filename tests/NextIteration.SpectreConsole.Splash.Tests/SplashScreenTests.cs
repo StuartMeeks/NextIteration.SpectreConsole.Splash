@@ -49,7 +49,8 @@ namespace NextIteration.SpectreConsole.Splash.Tests
         public void Show_with_custom_tagline_emits_it()
         {
             var prev = AnsiConsole.Console;
-            using var test = new TestConsole().Width(120);
+            using var test = new TestConsole();
+            test.Width(120);
             AnsiConsole.Console = test;
             try
             {
