@@ -17,7 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `char.IsAsciiHexDigit`, which is available on both shipped target frameworks and reads
   as the intent. The two `TestConsole` instances in `SplashScreenTests` are now disposed
   via `using` (`cs/local-not-disposed`); `TestConsole` is `IDisposable` and both were
-  leaking. No behaviour, public API or rendered output changed.
+  leaking. The `Width(120)` call is now a separate statement rather than chained into the
+  `using` initializer, so the `using` binds directly to the constructed console — CodeQL
+  cannot prove a fluent method returns its receiver, so the chained form left the
+  construction flagged as undisposed. No behaviour, public API or rendered output changed.
 
 ### Changed
 
