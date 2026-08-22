@@ -32,23 +32,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v6
-        with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: csharp
+          # build-mode: none analyses the C# source directly, without a build.
+          # It is load-bearing, not a convenience, for two reasons:
+          #
+          # 1. paths-ignore (below) only takes effect in this mode. When CodeQL
+          #    builds a compiled language, GitHub applies no path filter — every
+          #    file the compiler sees is analysed, obj/ included — so under the
+          #    explicit build this workflow used to run, paths-ignore was
+          #    silently inert and the xUnit auto-generated entry point in obj/
+          #    was analysed and flagged in every repo. Buildless extraction
+          #    honours the filter, so the exclusion the standard mandates
+          #    actually happens.
+          #
+          # 2. It reads the source across every target framework at once. These
+          #    repos multi-target, and autobuild has picked a single TFM in the
+          #    past, silently analysing half the code; the explicit build existed
+          #    to guard against that. Buildless extraction reads the source
+          #    itself, not one TFM's build output, so it covers all of it with no
+          #    build step to get wrong.
+          build-mode: none
           # security-and-quality is broader than the default security-extended;
           # these are small libraries, so the extra findings are affordable.
           queries: security-and-quality
           # Analyse source only. obj/ and bin/ hold generated and compiled
           # output — e.g. the xUnit auto-generated entry point — so findings
-          # there are noise against code no human maintains.
+          # there are noise against code no human maintains. Effective only
+          # under build-mode: none (above).
           #
           # query-filters excludes the two audit queries that fire on every
           # P/Invoke declaration and call site (cs/unmanaged-code,
@@ -67,15 +80,6 @@ jobs:
                   id: cs/unmanaged-code
               - exclude:
                   id: cs/call-to-unmanaged-code
-
-      # Explicit build rather than autobuild: these repos multi-target, and
-      # autobuild has picked a single TFM in the past, silently analysing half
-      # the code. Restore is separate so a restore failure is legible.
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v4

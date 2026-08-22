@@ -57,8 +57,7 @@ namespace NextIteration.SpectreConsole.Splash
             for (var i = 1; i < 7; i++)
             {
                 var c = hex[i];
-                var isHex = (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
-                if (!isHex)
+                if (!char.IsAsciiHexDigit(c))
                 {
                     throw new ArgumentException(
                         $"Hex colour '{hex}' contains non-hex character '{c}' at position {i}.", nameof(hex));
