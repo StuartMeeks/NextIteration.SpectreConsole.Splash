@@ -19,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   via `using` (`cs/local-not-disposed`); `TestConsole` is `IDisposable` and both were
   leaking. No behaviour, public API or rendered output changed.
 
+### Changed
+
+- **CodeQL now analyses with `build-mode: none`, per the updated `codeql.yml` template
+  (§4.4).** The workflow previously ran an explicit `dotnet build` before analysis, under
+  which GitHub applies no path filter to a compiled language — so the `paths-ignore:
+  **/obj/**` this repo already carried was silently inert, and CodeQL flagged the xUnit
+  auto-generated entry point in `obj/` (two `cs/missed-ternary-operator` alerts against
+  code no human maintains). Buildless extraction honours `paths-ignore`, so that
+  exclusion now actually takes effect, and it reads the source across every target
+  framework at once rather than one TFM's build output. The file is the Standards
+  template verbatim; the Setup .NET / Restore / Build steps are gone.
+
 ---
 
 ## [1.0.0] — 2026-08-21
