@@ -34,6 +34,6 @@
       after the test-platform argument separator — a collector that is referenced but
       never invoked reads as coverage in the dependency list while producing no data.
     -->
-    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.0" />
   </ItemGroup>
 </Project>
