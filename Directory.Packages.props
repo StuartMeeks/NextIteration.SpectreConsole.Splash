@@ -20,12 +20,12 @@
     <PackageVersion Include="Spectre.Console" Version="0.57.2" />
     <!-- Build-time only (PrivateAssets=All), never a consumer dependency.
          STANDARD.md 1.7, at the estate-wide version. -->
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.400" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
   </ItemGroup>
 
   <ItemGroup Label="Test">
     <PackageVersion Include="Spectre.Console.Testing" Version="0.57.2" />
-    <PackageVersion Include="xunit.v3" Version="4.0.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.1" />
     <!--
       STANDARD.md 2.6: the Microsoft.Testing.Platform coverage collector, the MTP
       equivalent of coverlet. Do NOT add Microsoft.NET.Test.Sdk,
@@ -34,6 +34,6 @@
       after the test-platform argument separator — a collector that is referenced but
       never invoked reads as coverage in the dependency list while producing no data.
     -->
-    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.0" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.2" />
   </ItemGroup>
 </Project>
