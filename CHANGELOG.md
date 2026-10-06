@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.2] — 2026-10-06
+
+A maintenance release with **no consumer-visible API, dependency or behaviour change**.
+The package's dependencies (Spectre.Console 0.57.2, Figgle 0.6.6) are already current. The
+only change is the build tooling the package is produced with.
+
+### Changed
+
+- Build tooling: Microsoft.SourceLink.GitHub 10.0.400 → 10.0.401 (`PrivateAssets="All"`,
+  never a consumer dependency).
+- Test tooling: xunit.v3 4.0.0 → 4.0.1, Microsoft.Testing.Extensions.CodeCoverage
+  18.10.0 → 18.11.2. Test-only, not shipped.
+
+### Fixed
+
+- CHANGELOG: the `[Unreleased]` comparison link pointed at `v1.0.0`, and `[1.0.1]` had no
+  link at all.
+
+---
+
 ## [1.0.1] — 2026-08-22
 
 ### Fixed
@@ -223,7 +243,9 @@ baseline in
   interpolation, colour validation, tagline strategies, renderer output,
   and the quote pool).
 
-[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.3.0
 [0.2.0]: https://github.com/StuartMeeks/NextIteration.SpectreConsole.Splash/releases/tag/v0.2.0
