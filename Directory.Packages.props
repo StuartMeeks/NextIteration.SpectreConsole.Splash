@@ -20,7 +20,7 @@
     <PackageVersion Include="Spectre.Console" Version="0.57.2" />
     <!-- Build-time only (PrivateAssets=All), never a consumer dependency.
          STANDARD.md 1.7, at the estate-wide version. -->
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.403" />
   </ItemGroup>
 
   <ItemGroup Label="Test">
