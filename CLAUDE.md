@@ -80,11 +80,16 @@ that is an `EXCEPTIONS.md` entry in the standards repo, not a local difference.
 ## Dependabot
 
 Minor and patch updates auto-merge behind CI. Major updates stay open for a human — that
-is deliberate, not a backlog to clear. `dependabot.yml` here has **no `ignore` block**, and
-adding one would be wrong: §4.10 scopes that list to packages carrying per-TFM floors, and
-this repo has none, so every major bump it files is genuinely reviewable. `audit-drift.sh`
-checks the `ignore` set against the repo's actual per-TFM floors, so an inherited entry
-fails the audit rather than passing quietly.
+is deliberate, not a backlog to clear. `dependabot.yml` here has **no per-TFM floor
+entries** in its `ignore` block, and adding one would be wrong: §4.10 scopes that list to
+packages carrying per-TFM floors, and this repo has none, so every major bump it files is
+genuinely reviewable. `audit-drift.sh` checks the floor entries against the repo's actual
+per-TFM floors, so an inherited entry fails the audit rather than passing quietly.
+
+The `ignore` block's only entries are the estate-wide §4.13 pair. The estate targets LTS
+.NET releases only. .NET 11 (STS) is skipped and the next target framework is .NET 12, so
+`dependabot.yml` ignores every `Microsoft.*` / `System.*` 11.x version. Do not propose or
+merge 11.x package or TFM upgrades.
 
 ## After opening a pull request
 
